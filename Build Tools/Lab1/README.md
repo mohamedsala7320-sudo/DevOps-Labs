@@ -62,10 +62,14 @@ docker run --rm -it calculator-lab1
 ---
 
 📸 Screenshots & Verification
+
 All execution steps, build logs, and test results have been captured and saved in the screenshots/ directory:
-Installation / Setup verification
-Docker Build Log (mvn package execution)
-Interactive Container Run Output
+
+1.Installation / Setup verification
+
+2.Docker Build Log (mvn package execution)
+
+3.Interactive Container Run Output
 
 ---
 
