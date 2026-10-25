@@ -45,8 +45,6 @@ Initialized the control plane on the Master node using `kubeadm init`, copied th
 Verified that all cluster nodes transitioned into the `Ready` state with Calico CNI fully operational for pod-to-pod networking.
 - **Cluster Ready Status:**
   ![Cluster Ready](screenshots/Cluster-is-ready-now.png)
-- **Detailed Nodes Status:**
-  ![Nodes Details](screenshots/nodes-details.png)
 
 ### Step 6: Deploying Sample Application (Nginx Workload)
 Deployed an Nginx workload structured with replicas and exposed it via `NodePort` to test intra-cluster load balancing and external connectivity.
@@ -62,9 +60,10 @@ Installed the Kubernetes Metrics Server, patched it to bypass insecure TLS with 
 
 ## 🏆 Final Result & High-Performance Management (K9s CLI)
 To achieve ultimate cluster observability and overcome traditional dashboard proxy limitations, we integrated **K9s CLI** as our primary high-performance monitoring interface, providing live tracking of pods, nodes, and resource usage.
+- **K9s CLI**
+  ![K9s CLI Cluster Observability](screenshots/nodes-details.png)
 
 ---
 
 ## 👤 Author
-**Mohamed Salah**  
-*Aspiring DevOps Engineer*
+**Mohamed Salah**
