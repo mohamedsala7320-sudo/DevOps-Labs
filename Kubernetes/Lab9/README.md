@@ -10,7 +10,45 @@ Welcome to my DevOps lab documentation! In this project, I successfully provisio
 - **Container Runtime:** `containerd`
 - **Orchestration:** Kubernetes v1.30 (`kubeadm`, `kubelet`, `kubectl`)
 - **Monitoring & Management:** Metrics Server & K9s CLI
+```mermaid
+graph TD
+    subgraph K8s_Cluster["Kubernetes v1.30 Cluster (Bridged Network)"]
+        
+        subgraph Master_Node["Master Node (192.168.1.43)"]
+            API["kube-apiserver"]
+            CM["kube-controller-manager"]
+            SCH["kube-scheduler"]
+            ETCD[("etcd")]
+            K9S["K9s CLI / Management"]
+            MS["Metrics Server"]
+        end
 
+        subgraph Worker_1["Worker Node 1"]
+            KL1["kubelet"]
+            KP1["kube-proxy"]
+            CR1["containerd"]
+            POD1["Nginx Pod 1"]
+            POD2["Nginx Pod 2"]
+        end
+
+        subgraph Worker_2["Worker Node 2"]
+            KL2["kubelet"]
+            KP2["kube-proxy"]
+            CR2["containerd"]
+            POD3["Nginx Pod 3"]
+        end
+
+        Calico["Calico CNI (Pod-to-Pod Overlay Network)"]
+    end
+
+    User["DevOps Engineer / User"] -->|SSH / K9s Management| Master_Node
+    User -->|HTTP NodePort Access| Worker_1
+    User -->|HTTP NodePort Access| Worker_2
+
+    Master_Node <--> Calico
+    Worker_1 <--> Calico
+    Worker_2 <--> Calico
+```
 ---
 
 ## 📸 Lab Step-by-Step Implementation & Documentation
