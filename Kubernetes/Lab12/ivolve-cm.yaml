@@ -1,0 +1,8 @@
+apiVersion: v1
+data:
+  DB_HOST: ivolve-host-server
+  DB_USER: ivolve_user
+kind: ConfigMap
+metadata:
+  name: ivolve-cm
+  namespace: ivolve
