@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ivolve-app-pod
+spec:
+  nodeSelector:
+    project: ivolve
+  tolerations:
+  - key: "workload"
+    operator: "Equal"
+    value: "ivolveApp"
+    effect: "NoSchedule"
+  containers:
+  - name: nginx-container
+    image: nginx:alpine
