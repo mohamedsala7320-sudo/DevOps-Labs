@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ivolveapp
+  namespace: ivolve
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ivolveapp
+  template:
+    metadata:
+      labels:
+        app: ivolveapp
+    spec:
+      nodeSelector:
+        project: ivolve
+      tolerations:
+        - key: workload
+          operator: Equal
+          value: ivolveApp
+          effect: NoSchedule
+      initContainers:
+        - name: init-mysql
+          image: mysql:8.4
+          envFrom:
+            - configMapRef:
+                name: ivolvecm
+            - secretRef:
+                name: ivolvesecret
+          command:
+            - sh
+            - -c
+            - |
+              until mysqladmin ping -h "$DB_HOST" -u root -p"$MYSQL_ROOT_PASSWORD" --silent; do
+                echo "Waiting for MySQL at $DB_HOST..."
+                sleep 3
+              done
+              echo "MySQL is ready"
+              mysql -h "$DB_HOST" -u root -p"$MYSQL_ROOT_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS ivolve; CREATE USER IF NOT EXISTS '$DB_USER'@'%' IDENTIFIED BY '$DB_PASSWORD'; GRANT ALL PRIVILEGES ON ivolve.* TO '$DB_USER'@'%'; FLUSH PRIVILEGES;"
+              echo "Database ivolve is ready and privileges were granted to $DB_USER"
+      containers:
+        - name: ivolveapp
+          image: mosala7320/ivolve-node-app:1.0
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: ivolvecm
+                  key: DB_HOST
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: ivolvecm
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ivolvesecret
+                  key: DB_PASSWORD
+            - name: DB_NAME
+              value: ivolve
+            - name: LOG_DIR
+              value: /app/logs/ivolveapp
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          volumeMounts:
+            - name: logs
+              mountPath: /app/logs
+      volumes:
+        - name: logs
+          persistentVolumeClaim:
+            claimName: ivolvepvc
